@@ -1,34 +1,60 @@
 import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { CategoryModel } from "../../models/CateegoryModel";
 import CategoryService from "../../services/CategoryService";
+import ProductService from "../../services/ProductService";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [category, setCategory] = useState<CategoryModel[]>([]);
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  const fetchCars = async () => {
+  const handleLogoClick = () => {
+    navigate("/");
+  };
+
+  const fetchCategory = async () => {
     try {
       const result = await CategoryService.getCategories().then(
         (result: any) => result.data.data
       );
       setCategory(result);
     } catch (error) {
-      console.error("Error fetching cars:", error);
+      console.error("Error fetching categories:", error);
     }
   };
+
   useEffect(() => {
-    fetchCars();
+    fetchCategory();
   }, []);
+
+  const handleCategoryClick = async (categoryId: number) => {
+    try {
+      const response = await ProductService.getProductByCategoryId(categoryId);
+      const products = response.data.data;
+      if (products.length === 0) {
+        alert("Bu kategoride ürün bulunmamaktadır.");
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   return (
     <div>
       <nav className="bg-white border-gray-200 dark:bg-gray-900">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
           <a className="flex items-center space-x-3 rtl:space-x-reverse">
-            <img
-              src="../../../public/assets/logo/trendymall.png"
-              className="w-40 h-10"
-              alt="Trendymall Logo"
-            />
+            <div className="flex items-center space-x-3 rtl:space-x-reverse">
+              <button onClick={handleLogoClick} className="flex items-center">
+                <img
+                  src="../../../public/assets/logo/trendymall.png"
+                  className="w-40 h-10"
+                  alt="Trendymall Logo"
+                />
+              </button>
+            </div>
           </a>
           <div className="flex items-center space-x-6 rtl:space-x-reverse">
             <a
@@ -60,12 +86,13 @@ export default function Navbar() {
             <ul className="flex flex-row font-medium mt-0 space-x-8 rtl:space-x-reverse text-sm">
               {category.map((category) => (
                 <li key={category.id}>
-                  <a
-                    href="#"
+                  <Link
+                    to={`/category-list/${category.id}`}
+                    onClick={() => handleCategoryClick(category.id)}
                     className="text-gray-900 dark:text-white hover:underline"
                   >
                     {category.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 import { ProductModel } from "../../models/ProductModel";
 import ProductService from "../../services/ProductService";
+import { useParams } from "react-router-dom";
 
-export default function Homepage() {
+export default function CategoryList() {
+  const { id } = useParams();
   const [products, setProducts] = useState<ProductModel[]>([]);
-  
 
-  const fetchProducts = async () => {
-    try {
-      const result = await ProductService.getProducts().then(
-        (result: any) => result.data.data
-      );
-      setProducts(result);
-    } catch (error) {
-      console.error("Error fetching cars:", error);
-    }
-  };
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    const categoryId = id ? parseInt(id, 10) : undefined;
+  
+    if (categoryId !== undefined) {
+      ProductService.getProductByCategoryId(categoryId)
+        .then((result) => setProducts(result.data.data))
+        .catch((error) => console.error("Error fetching products:", error));
+    } else {
+      console.error("Invalid category ID");
+    }
+  }, [id]); 
+  
 
   return (
     <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
