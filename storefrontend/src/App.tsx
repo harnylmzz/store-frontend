@@ -6,6 +6,7 @@ import Footer from "./components/Footer/Footer";
 import CartDetail from "./components/CartDetail/CartDetail";
 import CategoryList from "./components/CategoryList/CategoryList";
 import Login from "./components/Auth/Login";
+import Signup from "./components/Auth/Signup";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/cart-detail" element={<CartDetail />} />
         <Route path="/category-list/:id" element={<CategoryList />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Signup />} />
       </Routes>
       <Footer />
     </>
