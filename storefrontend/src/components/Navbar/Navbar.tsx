@@ -9,6 +9,22 @@ export default function Navbar() {
   const [category, setCategory] = useState<CategoryModel[]>([]);
   useParams();
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    navigate("/login"); // Çıkış yapıldığında login sayfasına yönlendir
+  };
 
   const handleLogoClick = () => {
     navigate("/");
@@ -57,28 +73,31 @@ export default function Navbar() {
             </div>
           </a>
           <div className="flex items-center space-x-6 rtl:space-x-reverse">
-            <a
-              href="tel:5541251234"
-              className="text-sm text-gray-500 dark:text-white hover:underline"
-            >
-              WhatsApp Destek: (554) 012-3456
-            </a>
-            <div className="flex items-center">
+            {isLoggedIn ? (
               <button
-                type="button"
-                onClick={() => navigate("/login")}
+                onClick={handleLogout}
                 className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
               >
-                Giriş Yap
+                Çıkış Yap
               </button>
-              <button
-                type="button"
-                onClick={() => navigate("/register")}
-                className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-              >
-                Kayıt Ol
-              </button>
-            </div>
+            ) : (
+              <div className="flex items-center">
+                <button
+                  type="button"
+                  onClick={() => navigate("/login")}
+                  className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                >
+                  Giriş Yap
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate("/register")}
+                  className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                >
+                  Kayıt Ol
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </nav>
@@ -117,9 +136,9 @@ export default function Navbar() {
                     >
                       <path
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="m1 1 4 4 4-4"
                       />
                     </svg>
@@ -146,9 +165,9 @@ export default function Navbar() {
                       >
                         <path
                           stroke="currentColor"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
                           d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                         />
                       </svg>
